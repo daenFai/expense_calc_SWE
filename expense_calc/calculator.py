@@ -4,11 +4,13 @@ import math
 
 
 def add_expense(expenses, name, amount, category):
-    """Append an expense. Raises ValueError for an invalid amount."""
+    """Append an expense. Category is normalized (strip + lowercase).
+    Raises ValueError for an invalid amount."""
     if isinstance(amount, bool) or not isinstance(amount, (int, float)):
         raise ValueError("amount must be a number")
     if not math.isfinite(amount) or amount < 0:
         raise ValueError("amount must be a finite number >= 0")
+    category = str(category).strip().lower()
     expenses.append({"name": name, "amount": amount, "category": category})
     return expenses
 

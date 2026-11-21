@@ -72,5 +72,19 @@ class TestAmountValidation(unittest.TestCase):
         self.assertEqual(ex, [])
 
 
+class TestCategoryNormalization(unittest.TestCase):
+    def test_case_and_spaces_get_same_tax(self):
+        for k in ("food", "Food", " FOOD "):
+            ex = []
+            c.add_expense(ex, "a", 100.0, k)
+            self.assertAlmostEqual(c.total_with_tax(ex), 105.0)
+
+    def test_by_category_merges_variants(self):
+        ex = []
+        c.add_expense(ex, "a", 1.0, "food")
+        c.add_expense(ex, "b", 2.0, "Food ")
+        self.assertEqual(c.totals_by_category(ex), {"food": 3.0})
+
+
 if __name__ == "__main__":
     unittest.main()
