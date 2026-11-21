@@ -14,32 +14,23 @@ def calculate_total(expenses):
     return total
 
 
+# Pricing policies ("strategies") as data: category -> multiplier.
+# Adding a category or a new policy no longer means copying an if/elif chain.
+TAX_RATES = {"food": 1.05, "transport": 1.10, "entertainment": 1.20}
+DISCOUNT_RATES = {"food": 0.95, "transport": 0.90, "entertainment": 0.80}
+
+
+def total_with_policy(expenses, rates):
+    """Sum amounts after applying the per-category multiplier (default 1.0)."""
+    return sum(e["amount"] * rates.get(e["category"], 1.0) for e in expenses)
+
+
 def total_with_tax(expenses):
-    total = 0
-    for e in expenses:
-        if e["category"] == "food":
-            total += e["amount"] * 1.05
-        elif e["category"] == "transport":
-            total += e["amount"] * 1.10
-        elif e["category"] == "entertainment":
-            total += e["amount"] * 1.20
-        else:
-            total += e["amount"] * 1.00
-    return total
+    return total_with_policy(expenses, TAX_RATES)
 
 
 def total_with_discount(expenses):
-    total = 0
-    for e in expenses:
-        if e["category"] == "food":
-            total += e["amount"] * 0.95
-        elif e["category"] == "transport":
-            total += e["amount"] * 0.90
-        elif e["category"] == "entertainment":
-            total += e["amount"] * 0.80
-        else:
-            total += e["amount"]
-    return total
+    return total_with_policy(expenses, DISCOUNT_RATES)
 
 
 def totals_by_category(expenses):
