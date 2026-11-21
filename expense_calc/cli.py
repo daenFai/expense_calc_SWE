@@ -10,9 +10,12 @@ def main(argv=None):
         cmd = input("> ").strip().lower()
         if cmd == "add":
             name = input("name: ")
-            amount = float(input("amount: "))
+            raw_amount = input("amount: ")
             category = input("category: ")
-            calculator.add_expense(expenses, name, amount, category)
+            try:
+                calculator.add_expense(expenses, name, float(raw_amount), category)
+            except ValueError as err:
+                print("Invalid expense:", err)
         elif cmd == "total":
             print("Total:", calculator.calculate_total(expenses))
         elif cmd == "tax":

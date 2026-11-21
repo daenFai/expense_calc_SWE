@@ -44,5 +44,33 @@ class TestCalculator(unittest.TestCase):
         self.assertEqual(len(rows), 5)
 
 
+class TestAmountValidation(unittest.TestCase):
+    def test_rejects_negative(self):
+        with self.assertRaises(ValueError):
+            c.add_expense([], "refund", -1.0, "food")
+
+    def test_rejects_nan_and_inf(self):
+        for bad in (float("nan"), float("inf")):
+            with self.assertRaises(ValueError):
+                c.add_expense([], "x", bad, "food")
+
+    def test_rejects_non_numbers(self):
+        for bad in ("10", None, True):
+            with self.assertRaises(ValueError):
+                c.add_expense([], "x", bad, "food")
+
+    def test_accepts_zero_and_int(self):
+        ex = []
+        c.add_expense(ex, "free", 0, "other")
+        c.add_expense(ex, "int", 5, "other")
+        self.assertEqual(c.calculate_total(ex), 5)
+
+    def test_invalid_expense_not_stored(self):
+        ex = []
+        with self.assertRaises(ValueError):
+            c.add_expense(ex, "x", -5, "food")
+        self.assertEqual(ex, [])
+
+
 if __name__ == "__main__":
     unittest.main()
